@@ -1,0 +1,35 @@
+package com.firstcircle
+
+import com.firstcircle.user.UserService
+import io.ktor.http.*
+import io.ktor.server.application.call
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import java.math.BigDecimal
+
+fun Routing.userRoutes(userService: UserService) {
+    route("/users") {
+        post {
+            val params = call.receive<Map<String, String>>()
+            val firstName = params["firstName"] ?: return@post call.respond(
+                HttpStatusCode.BadRequest, mapOf("error" to "firstName is required")
+            )
+            val lastName = params["lastName"] ?: return@post call.respond(
+                HttpStatusCode.BadRequest, mapOf("error" to "lastName is required")
+            )
+            val initialBalance = params["initialBalance"]?.let { BigDecimal(it) } ?: BigDecimal.ZERO
+            val user = userService.createUser(firstName, lastName, initialBalance)
+            call.respond(HttpStatusCode.Created, user)
+        }
+
+        get("/{id}") {
+            val id = call.parameters["id"] ?: return@get call.respond(
+                HttpStatusCode.BadRequest, mapOf("error" to "id is required")
+            )
+            runCatching { userService.findUserById(id) }
+                .onSuccess { call.respond(it) }
+                .onFailure { call.respond(HttpStatusCode.NotFound, mapOf("error" to it.message)) }
+        }
+    }
+}
