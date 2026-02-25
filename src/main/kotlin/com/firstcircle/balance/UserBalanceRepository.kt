@@ -19,18 +19,15 @@ class UserBalanceRepository {
         userBalanceLookup[userId] ?: error("User balance with id $userId not found")
 
     fun updateUserBalance(userId: String, amount: BigDecimal): UserBalance {
-        if (amount == BigDecimal.ZERO) {
-            error("Zero amount not allowed.")
+        if (amount == BigDecimal.ZERO) error("Zero amount not allowed.")
+
+        val result = userBalanceLookup.compute(userId) { _, existing ->
+            val balance = existing ?: error("User balance with id $userId not found")
+            val newBalance = balance.balance + amount
+            if (newBalance <= BigDecimal.ZERO) error("Insufficient balance for user $userId.")
+            balance.copy(balance = newBalance)
         }
-        val userBalance = findUserBalanceById(userId)
 
-        val newBalance = userBalance.balance + amount
-        if (newBalance <= BigDecimal.ZERO) {
-            error("Insufficient balance for user $userId.")
-        }
-
-        userBalanceLookup[userId] = userBalance.copy(balance = newBalance)
-
-        return userBalance
+        return result ?: error("User balance with id $userId not found")
     }
 }
