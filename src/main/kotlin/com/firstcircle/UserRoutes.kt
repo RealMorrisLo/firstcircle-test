@@ -1,11 +1,15 @@
 package com.firstcircle
 
 import com.firstcircle.user.UserService
-import io.ktor.http.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.server.application.call
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Routing
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
 import java.math.BigDecimal
 
 fun Routing.userRoutes(userService: UserService) {
@@ -29,7 +33,7 @@ fun Routing.userRoutes(userService: UserService) {
             )
             runCatching { userService.findUserById(id) }
                 .onSuccess { call.respond(it) }
-                .onFailure { call.respond(HttpStatusCode.NotFound, mapOf("error" to it.message)) }
+                .onFailure { call.respond(NotFound, mapOf("error" to it.message)) }
         }
     }
 }

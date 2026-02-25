@@ -6,7 +6,7 @@ class UserRepository {
     private val users = ConcurrentHashMap<String, User>()
 
     fun createUser(firstName: String, lastName: String): User {
-        val user =  User(firstName= firstName, lastName = lastName)
+        val user = User(firstName = firstName, lastName = lastName)
         users[user.id.toString()] = user
 
         return user

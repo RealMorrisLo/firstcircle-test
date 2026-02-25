@@ -16,6 +16,7 @@ plugins {
     `java-library`
     application
     kotlin("jvm")
+    id("io.gitlab.arturbosch.detekt") version "1.23.6"
 }
 
 group = "com.firstcircle"
@@ -49,6 +50,9 @@ dependencies {
     // Testing
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
+
+    // Detekt
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.6")
 }
 
 application {
@@ -56,5 +60,15 @@ application {
 }
 
 kotlin {
-    jvmToolchain(24)
+    jvmToolchain(21)
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    autoCorrect = true
+    config.setFrom(files("$rootDir/detekt.yml"))
+}
+
+tasks.named("build") {
+    dependsOn("detekt")
 }

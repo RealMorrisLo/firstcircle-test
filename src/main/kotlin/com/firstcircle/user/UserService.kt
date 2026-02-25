@@ -9,7 +9,7 @@ class UserService(
 ) {
     fun createUser(firstName: String, lastName: String, initialBalance: BigDecimal = BigDecimal.ZERO): User {
         val user = userRepository.createUser(firstName, lastName)
-        val userBalance = userBalanceRepository.createUserBalance(user, initialBalance)
+        userBalanceRepository.createUserBalance(user, initialBalance)
         return user
     }
 
