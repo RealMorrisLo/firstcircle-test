@@ -47,6 +47,10 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
+}
+
 tasks.named("build") {
     dependsOn("detekt")
 }
