@@ -5,7 +5,7 @@ import java.math.BigDecimal
 import java.util.concurrent.ConcurrentHashMap
 
 class UserBalanceRepository {
-    val userBalanceLookup = ConcurrentHashMap<String, UserBalance>()
+    private val userBalanceLookup = ConcurrentHashMap<String, UserBalance>()
 
     fun createUserBalance(user: User, initialBalance: BigDecimal): UserBalance {
         val userId = user.id.toString()
@@ -24,7 +24,7 @@ class UserBalanceRepository {
         val result = userBalanceLookup.compute(userId) { _, existing ->
             val balance = existing ?: error("User balance with id $userId not found")
             val newBalance = balance.balance + amount
-            if (newBalance <= BigDecimal.ZERO) error("Insufficient balance for user $userId.")
+            if (newBalance < BigDecimal.ZERO) error("Insufficient balance for user $userId.")
             balance.copy(balance = newBalance)
         }
 

@@ -6,12 +6,23 @@ import io.ktor.server.application.call
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Routing
+import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import java.math.BigDecimal
 
 fun Routing.userBalanceRoutes(userBalanceService: UserBalanceService) {
     route("/balances") {
+        get("/{userId}") {
+            val userId = call.parameters["userId"] ?: return@get call.respond(
+                HttpStatusCode.BadRequest, mapOf("error" to "userId is required")
+            )
+
+            runCatching { userBalanceService.getUserBalanceById(userId) }
+                .onSuccess { call.respond(it) }
+                .onFailure { call.respond(HttpStatusCode.BadRequest, mapOf("error" to it.message)) }
+        }
+
         post("/deposit") {
             val params = call.receive<Map<String, String>>()
             val userId = params["userId"] ?: return@post call.respond(
@@ -50,7 +61,7 @@ fun Routing.userBalanceRoutes(userBalanceService: UserBalanceService) {
                 HttpStatusCode.BadRequest, mapOf("error" to "amount is required")
             )
             runCatching { userBalanceService.transfer(fromUserId, toUserId, amount) }
-                .onSuccess { call.respond(mapOf("status" to "transfer successful")) }
+                .onSuccess { call.respond(HttpStatusCode.NoContent) }
                 .onFailure { call.respond(HttpStatusCode.BadRequest, mapOf("error" to it.message)) }
         }
     }
