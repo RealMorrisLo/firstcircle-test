@@ -1,4 +1,4 @@
-package com.firstcircle
+package com.firstcircle.route
 
 import com.firstcircle.balance.UserBalanceService
 import io.ktor.http.HttpStatusCode
