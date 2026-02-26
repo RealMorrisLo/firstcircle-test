@@ -26,7 +26,9 @@ class UserBalanceRoutesTest : FunSpec({
                     setBody("""{"firstName":"Alice","lastName":"Wong","initialBalance":"500.00"}""")
                 }
                 createResponse.status shouldBe HttpStatusCode.Created
-                val userId = Json.parseToJsonElement(createResponse.bodyAsText()).jsonObject["id"]!!.jsonPrimitive.content
+                val userId = Json.parseToJsonElement(
+                    createResponse.bodyAsText()
+                ).jsonObject["id"]!!.jsonPrimitive.content
 
                 val response = client.get("/balances/$userId")
                 response.status shouldBe HttpStatusCode.OK
@@ -41,7 +43,9 @@ class UserBalanceRoutesTest : FunSpec({
                     contentType(ContentType.Application.Json)
                     setBody("""{"firstName":"Bob","lastName":"Lee","initialBalance":"100.00"}""")
                 }
-                val userId = Json.parseToJsonElement(createResponse.bodyAsText()).jsonObject["id"]!!.jsonPrimitive.content
+                val userId = Json.parseToJsonElement(
+                    createResponse.bodyAsText()
+                ).jsonObject["id"]!!.jsonPrimitive.content
 
                 val response = client.post("/balances/deposit") {
                     contentType(ContentType.Application.Json)
@@ -59,7 +63,9 @@ class UserBalanceRoutesTest : FunSpec({
                     contentType(ContentType.Application.Json)
                     setBody("""{"firstName":"Carol","lastName":"Tan","initialBalance":"200.00"}""")
                 }
-                val userId = Json.parseToJsonElement(createResponse.bodyAsText()).jsonObject["id"]!!.jsonPrimitive.content
+                val userId = Json.parseToJsonElement(
+                    createResponse.bodyAsText()
+                ).jsonObject["id"]!!.jsonPrimitive.content
 
                 val response = client.post("/balances/withdraw") {
                     contentType(ContentType.Application.Json)
@@ -77,7 +83,9 @@ class UserBalanceRoutesTest : FunSpec({
                     contentType(ContentType.Application.Json)
                     setBody("""{"firstName":"Eve","lastName":"Park","initialBalance":"300.00"}""")
                 }
-                val fromUserId = Json.parseToJsonElement(fromResponse.bodyAsText()).jsonObject["id"]!!.jsonPrimitive.content
+                val fromUserId = Json.parseToJsonElement(
+                    fromResponse.bodyAsText()
+                ).jsonObject["id"]!!.jsonPrimitive.content
 
                 val toResponse = client.post("/users") {
                     contentType(ContentType.Application.Json)
@@ -122,7 +130,9 @@ class UserBalanceRoutesTest : FunSpec({
                     contentType(ContentType.Application.Json)
                     setBody("""{"firstName":"Dave","lastName":"Cruz","initialBalance":"10.00"}""")
                 }
-                val userId = Json.parseToJsonElement(createResponse.bodyAsText()).jsonObject["id"]!!.jsonPrimitive.content
+                val userId = Json.parseToJsonElement(
+                    createResponse.bodyAsText()
+                ).jsonObject["id"]!!.jsonPrimitive.content
 
                 val response = client.post("/balances/withdraw") {
                     contentType(ContentType.Application.Json)
