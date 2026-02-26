@@ -36,6 +36,3 @@ bin/
 ### Gradle ###
 .gradle/
 build/
-gradlew
-gradlew.bat
-gradle/wrapper
