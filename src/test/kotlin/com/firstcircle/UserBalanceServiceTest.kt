@@ -119,7 +119,7 @@ class UserBalanceServiceTest : FunSpec({
             val from = userService.createUser("Eve", "Park", BigDecimal("50.00"))
             val to = userService.createUser("Frank", "Kim", BigDecimal("100.00"))
 
-            shouldThrow<IllegalArgumentException> {
+            shouldThrow<IllegalStateException> {
                 userBalanceService.transfer(from.id.toString(), to.id.toString(), BigDecimal("100.00"))
             }
         }
@@ -147,6 +147,14 @@ class UserBalanceServiceTest : FunSpec({
             runCatching { userBalanceService.transfer(from.id.toString(), "non-existent-id", BigDecimal("50.00")) }
 
             userBalanceService.getUserBalanceById(from.id.toString()).balance shouldBe BigDecimal("300.00")
+        }
+
+        test("should throw when transferring fund with the same account") {
+            val from = userService.createUser("Eve", "Park", BigDecimal("300.00"))
+
+            shouldThrow<IllegalArgumentException> {
+                userBalanceService.transfer(from.id.toString(), from.id.toString(), BigDecimal(300))
+            }
         }
     }
 })

@@ -11,13 +11,9 @@ class UserBalanceService(
 
     fun transfer(fromUserId: String, toUserId: String, amount: BigDecimal) {
         require(amount > BigDecimal.ZERO) { "amount must be positive" }
-        val fromUserBalance = userBalanceRepository.findUserBalanceById(userId = fromUserId)
+        require(fromUserId != toUserId) { "Transfer not allowed for same user id" }
+        userBalanceRepository.findUserBalanceById(userId = fromUserId)
         userBalanceRepository.findUserBalanceById(toUserId)
-
-        val newFromUserBalance = fromUserBalance.balance.minus(amount)
-        require(newFromUserBalance >= BigDecimal.ZERO) {
-            "Balance can't be negative"
-        }
 
         withdraw(fromUserId, amount)
         deposit(toUserId, amount)
